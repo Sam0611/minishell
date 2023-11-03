@@ -29,7 +29,7 @@ void	sigint_in_heredoc(int signal)
 {
 	(void)signal;
 	printf("\n");
-	close(g_exit_code);
+	close(0);
 	g_exit_code = ERR_SIGINT;
 }
 

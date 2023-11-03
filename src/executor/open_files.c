@@ -25,25 +25,24 @@ static int	get_heredoc_fd(char *limiter)
 	char	*str;
 	int		pipefd[2];
 	int		len;
+	int		tmp_in;
 
-	g_exit_code = dup(0);
+	tmp_in = dup(0);
 	signal(SIGINT, sigint_in_heredoc);
 	len = ft_strlen(limiter);
 	if (pipe(pipefd) == -1)
 		return (-1);
-	str = get_next_line(g_exit_code);
+	str = get_next_line(0);
 	while (str && (ft_strncmp(limiter, str, len) || str[len] != '\n'))
 	{
 		write(pipefd[1], str, ft_strlen(str));
 		free(str);
-		str = get_next_line(g_exit_code);
+		str = get_next_line(0);
 	}
 	free(str);
-	if (g_exit_code != ERR_SIGINT)
-	{
-		close(g_exit_code);
-		g_exit_code = 0;
-	}
+	if (g_exit_code == ERR_SIGINT)
+		dup2(tmp_in, 0);
+	close(tmp_in);
 	close(pipefd[1]);
 	return (pipefd[0]);
 }
