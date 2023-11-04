@@ -28,7 +28,7 @@ static int	ft_strsearch(const char *s, char c)
 	return (i);
 }
 
-static char	*check_cmd(char *env, char *cmd)
+char	*check_cmd(char *env, char *cmd)
 {
 	int		i;
 	int		e;

@@ -19,7 +19,7 @@ SRC			:=  minishell.c signal_handler.c \
 				lexer.c quotes.c token.c lexer_destroy.c \
 				expander.c expand_part.c ft_getenv.c replace_word.c \
 				parser.c parser_destroy.c syntax_checker.c redirections.c \
-				exec.c open_files.c get_path.c print_error.c builtins.c \
+				exec.c open_files.c open_pipes.c get_path.c print_error.c builtins.c \
 				cd.c env.c echo.c pwd.c exit.c export.c unset.c
 				
 OBJ			:= $(addprefix $(DIR_OBJ)/,$(SRC:c=o))

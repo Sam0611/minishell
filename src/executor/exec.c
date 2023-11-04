@@ -23,6 +23,7 @@
 #define BUILTIN_ENV 2
 
 int		open_files(t_list *uncasted_redir, int *fd);
+int		open_pipes(t_list *uncasted_command, t_params *vars);
 char	*get_path(t_command cmd, char **env);
 int		is_builtin(char **args);
 int		exec_builtins(char **args, char **env);
@@ -67,11 +68,9 @@ static void	exec_in_child_process(t_command *cmd, t_params *vars)
 
 	path = NULL;
 	if (!is_builtin(cmd->args))
-	{
 		path = get_path(*cmd, vars->env);
-		if (!path)
-			return ;
-	}
+	else
+		g_exit_code = 0;
 	signal(SIGINT, sigint_in_cmd);
 	signal(SIGQUIT, sigquit_in_cmd);
 	pid = fork();
@@ -80,7 +79,7 @@ static void	exec_in_child_process(t_command *cmd, t_params *vars)
 	if (pid == 0)
 	{
 		if (!dup_and_close_fds(vars))
-			if (!exec_builtins(cmd->args, vars->env))
+			if (!exec_builtins(cmd->args, vars->env) && path)
 				execve(path, cmd->args, vars->env);
 		exit_process(vars);
 	}
@@ -91,16 +90,17 @@ static int	execute_cmd(t_list *uncasted_command, t_params *vars)
 {
 	t_command	*cmd;
 
-	if (pipe(vars->pipe_fd) == -1)
+	cmd = (t_command *) uncasted_command->content;
+	if (open_pipes(uncasted_command, vars))
 		return (1);
 	if (uncasted_command->next)
 		vars->file_fd[1] = vars->pipe_fd[1];
 	else
 		vars->file_fd[1] = dup(1);
-	cmd = (t_command *) uncasted_command->content;
 	if (!open_files(cmd->redirs, vars->file_fd) && cmd->args[0])
 	{
-		if (is_builtin(cmd->args) == BUILTIN_ENV && !uncasted_command->next)
+		if (is_builtin(cmd->args) == BUILTIN_ENV && !uncasted_command->next
+			&& uncasted_command == vars->cmd_beginning)
 			vars->env = builtins_changing_env(cmd->args, vars->env);
 		else
 			exec_in_child_process(cmd, vars);
