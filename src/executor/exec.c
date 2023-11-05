@@ -42,7 +42,7 @@ static void	exit_process(t_params *vars)
 	free(vars->env[i]);
 	free(vars->env);
 	commands_destroy(vars->cmd_beginning);
-	exit(0);
+	exit(g_exit_code);
 }
 
 static int	dup_and_close_fds(t_params *vars)
