@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 #include "ft_string.h"
+#include "ft_stdio.h"
 #include "parser.h"
 #include "executer.h"
 #include <unistd.h>
@@ -57,15 +58,26 @@ char	*check_cmd(char *env, char *cmd)
 	return (str[2]);
 }
 
+// /a ./a /ls ./ls = No such file or dir
+// ./Makefile = perm
+// a Makefile = cmd not found
 static int	check_file_error(char *cmd)
 {
 	DIR		*dir;
+	int		check;
 
-	access(cmd, X_OK);
-	if (errno == 13)
+	check = access(cmd, X_OK);
+	if (errno == 13 && (!ft_strncmp(cmd, "./", 2) || cmd[0] == '/'))
 	{
-		write(2, "minishell: ", 11);
-		ft_error(cmd, ERR_PERM);
+		ft_putstr_fd("minishell: ", 2);
+		return (ft_error(cmd, ERR_PERM));
+	}
+	if (check && (!ft_strncmp(cmd, "./", 2) || cmd[0] == '/'))
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		g_exit_code = ERR_CMD;
 		return (1);
 	}
 	dir = opendir(cmd);
@@ -86,7 +98,7 @@ char	*get_path(t_command cmd, char **env)
 	path = ft_strdup(cmd.args[0]);
 	if (!path)
 		return (NULL);
-	if (access(path, F_OK) != -1)
+	if (access(path, X_OK) != -1)
 		return (path);
 	free(path);
 	i = 0;
