@@ -125,6 +125,7 @@ char	**exec(t_list *uncasted_command, char **env)
 	vars.cmd_beginning = uncasted_command;
 	while (uncasted_command && g_exit_code != ERR_SIGINT)
 	{
+		signal(SIGQUIT, SIG_IGN);
 		execute_cmd(uncasted_command, &vars);
 		uncasted_command = uncasted_command->next;
 	}
@@ -132,7 +133,7 @@ char	**exec(t_list *uncasted_command, char **env)
 	status = g_exit_code;
 	while (waitpid(-1, &status, 0) != -1)
 		continue ;
-	if (WIFEXITED(status))
+	if (WIFEXITED(status) && !g_exit_code)
 		g_exit_code = WEXITSTATUS(status);
 	return (vars.env);
 }

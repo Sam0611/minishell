@@ -15,6 +15,7 @@
 #include <readline/readline.h>
 #include <unistd.h>
 
+// ctrl+C in general
 void	new_prompt_line(int signal)
 {
 	(void)signal;
@@ -25,6 +26,7 @@ void	new_prompt_line(int signal)
 	rl_redisplay();
 }
 
+// ctrl+C in heredoc
 void	sigint_in_heredoc(int signal)
 {
 	(void)signal;
@@ -33,6 +35,7 @@ void	sigint_in_heredoc(int signal)
 	g_exit_code = ERR_SIGINT;
 }
 
+// ctrl+C in command
 void	sigint_in_cmd(int signal)
 {
 	(void)signal;
@@ -42,6 +45,7 @@ void	sigint_in_cmd(int signal)
 	rl_replace_line("", 0);
 }
 
+// ctrl+\ in command
 void	sigquit_in_cmd(int signal)
 {
 	(void)signal;
