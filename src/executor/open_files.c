@@ -6,7 +6,7 @@
 /*   By: smalloir <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 13:39:24 by smalloir          #+#    #+#             */
-/*   Updated: 2023/10/25 19:48:44 by smalloir         ###   ########.fr       */
+/*   Updated: 2023/11/12 16:31:13 by smalloir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <unistd.h>
+#include <readline/readline.h>
 
 static int	get_heredoc_fd(char *limiter)
 {
@@ -29,15 +30,16 @@ static int	get_heredoc_fd(char *limiter)
 
 	tmp_in = dup(0);
 	signal(SIGINT, sigint_in_heredoc);
+	signal(SIGQUIT, SIG_IGN);
 	len = ft_strlen(limiter);
 	if (pipe(pipefd) == -1)
 		return (-1);
-	str = get_next_line(0);
-	while (str && (ft_strncmp(limiter, str, len) || str[len] != '\n'))
+	str = readline("heredoc> ");
+	while (str && ft_strcmp(str, limiter))
 	{
 		write(pipefd[1], str, ft_strlen(str));
 		free(str);
-		str = get_next_line(0);
+		str = readline("heredoc> ");
 	}
 	free(str);
 	if (g_exit_code == ERR_SIGINT)
