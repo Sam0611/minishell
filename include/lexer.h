@@ -19,7 +19,8 @@ typedef enum e_char_type
 {
 	CHAR_QUOTE = '\'',
 	CHAR_DQUOTE = '\"',
-	CHAR_SPACE = ' '
+	CHAR_SPACE = ' ',
+	CHAR_TAB = 9
 }			t_char_type;
 
 typedef enum e_token_type

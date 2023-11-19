@@ -112,7 +112,7 @@ t_list	*lexer_new(char *input)
 		return (lexer);
 	while (input[i])
 	{
-		if (input[i] == CHAR_SPACE)
+		if (input[i] == CHAR_SPACE || input[i] == CHAR_TAB)
 		{
 			i++;
 			continue ;

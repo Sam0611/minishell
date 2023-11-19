@@ -6,7 +6,7 @@
 #    By: kjimenez <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/29 11:53:31 by kjimenez          #+#    #+#              #
-#    Updated: 2023/09/07 15:26:51 by kjimenez         ###   ########.fr        #
+#    Updated: 2023/11/13 16:49:46 by smalloir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,9 +41,8 @@ BUILD_LIBFT	:= $(shell $(MAKE) -C $(LIBFT_PATH))
 
 VSUPFLAG	=	--suppressions=vsupp
 VFDFLAG		=	--track-fds=yes
-VCHFLAG		=	--trace-children=yes
 VLEAKFLAG	=	--leak-check=full --show-leak-kinds=all
-VFLAGS		=	${VSUPFLAG} ${VFDFLAG} ${VCHFLAG} ${VLEAKFLAG}
+VFLAGS		=	${VSUPFLAG} ${VFDFLAG} ${VLEAKFLAG}
 
 all: $(NAME)
 
@@ -64,9 +63,6 @@ val1:
 
 valfd:
 	valgrind ${VSUPFLAG} ${VFDFLAG} ./${NAME}
-
-valch:
-	valgrind ${VSUPFLAG} ${VCHFLAG} ./${NAME}
 
 valeak:
 	valgrind ${VSUPFLAG} ${VLEAKFLAG} ./${NAME}

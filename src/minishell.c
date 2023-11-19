@@ -55,11 +55,11 @@ static char	**interpret_command_line(char *line, char **envp)
 	{
 		add_history(line);
 		expanded_line = expand_str(line, envp);
-		g_exit_code = 0;
 		lexer = lexer_new(expanded_line);
 		free(expanded_line);
 		if (!lexer)
 			return (envp);
+		g_exit_code = 0;
 		commands = get_commands(lexer);
 		lexer_destroy(lexer);
 		if (!commands)
