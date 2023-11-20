@@ -75,18 +75,16 @@ static int	check_var(char *var)
 	int	i;
 
 	i = 0;
-	while (var[i] && var[i] != '=')
-	{
-		if ((i == 0 && ft_isdigit(var[i]))
-			|| (!ft_isalnum(var[i]) && var[i] != '_'))
-		{
-			ft_putstr_fd("minishell: export: '", 2);
-			ft_putstr_fd(var, 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-			g_exit_code = 1;
-			return (0);
-		}
+	while (ft_isalnum(var[i]) || var[i] == '_')
 		i++;
+	if (!var[0] || var[0] == '=' || ft_isdigit(var[0])
+		|| (var[i] && var[i] != '='))
+	{
+		ft_putstr_fd("minishell: export: '", 2);
+		ft_putstr_fd(var, 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
+		g_exit_code = 1;
+		return (0);
 	}
 	return (1);
 }
