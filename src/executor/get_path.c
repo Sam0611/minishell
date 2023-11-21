@@ -38,7 +38,7 @@ char	*check_cmd(char *env, char *cmd)
 
 	i = 5;
 	e = -1;
-	while (env && e == -1 && env[i - 1])
+	while (env && e == -1 && env[i - 1] && cmd[0])
 	{
 		len = ft_strsearch(env + i, ':');
 		str[0] = ft_substr(env, i, len);
@@ -58,9 +58,6 @@ char	*check_cmd(char *env, char *cmd)
 	return (str[2]);
 }
 
-// /a ./a /ls ./ls = No such file or dir
-// ./Makefile = perm
-// a Makefile = cmd not found
 static int	check_file_error(char *cmd)
 {
 	DIR		*dir;
