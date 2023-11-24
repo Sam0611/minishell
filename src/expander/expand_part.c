@@ -18,13 +18,6 @@ char	*ft_getenv(char *var, char **env);
 char	*replace_word(char *str, int start_index, int end_index,
 			char *new_word);
 
-static int	is_env_char(char c)
-{
-	if (ft_isalpha(c) || ft_isdigit(c) || c == '_')
-		return (1);
-	return (0);
-}
-
 static char	*get_part_from_str(char *str, int start_index, int end_index)
 {
 	int		i;
@@ -83,17 +76,37 @@ static void	expand_str_part_exit_code(char **expanded_str, int i, int j)
 	free(temp_expanded_str);
 }
 
+static void	expand_str_without_dollar(char **expanded_str, int i, int j)
+{
+	char	*temp_expanded_str;
+
+	temp_expanded_str = *expanded_str;
+	if (!ft_isdigit((*expanded_str)[j]))
+		j--;
+	*expanded_str = replace_word(*expanded_str, i, j, "");
+	free(temp_expanded_str);
+}
+
 void	expand_str_part(char **expanded_str, int *i, char **env)
 {
 	int		j;
+	char	c;
 
 	j = *i + 1;
-	if ((*expanded_str)[j] == '?')
+	c = (*expanded_str)[j];
+	if (c == '?')
 	{
 		expand_str_part_exit_code(expanded_str, *i, j);
 		return ;
 	}
-	while ((*expanded_str)[j] && is_env_char((*expanded_str)[j]))
+	if (c == '\'' || c == '\"' || ft_isdigit(c))
+	{
+		expand_str_without_dollar(expanded_str, *i, j);
+		(*i)--;
+		return ;
+	}
+	while ((ft_isalnum((*expanded_str)[j]) || (*expanded_str)[j] == '_')
+		&& (*expanded_str)[j])
 		j++;
 	if (*i != (j - 1))
 		expand_str_part_env_var(expanded_str, i, j, env);

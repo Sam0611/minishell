@@ -66,7 +66,7 @@ static char	*delete_part_from_str(char *str, int start_index, int end_index)
 	i = 0;
 	j = 0;
 	index_len = end_index - start_index;
-	str_without_word = malloc((ft_strlen(str) - index_len) + 1);
+	str_without_word = malloc(ft_strlen(str) - index_len);
 	if (!str_without_word)
 		return (NULL);
 	while (str[i])
