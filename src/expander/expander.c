@@ -33,7 +33,7 @@ char	*expand_str(char *str, char **env)
 			dquote_mode = 0;
 		else if (expanded_str[i] == '\'' && !dquote_mode)
 			quote_mode = 1;
-		else if (expanded_str[i] == '\"')
+		else if (expanded_str[i] == '\"' && !quote_mode)
 			dquote_mode = 1;
 		else if (expanded_str[i] == '$' && !quote_mode)
 			expand_str_part(&expanded_str, &i, env);

@@ -13,6 +13,7 @@
 #include "minishell.h"
 #include "ft_ctype.h"
 #include "ft_stdlib.h"
+#include "ft_string.h"
 
 char	*ft_getenv(char *var, char **env);
 char	*replace_word(char *str, int start_index, int end_index,
@@ -58,9 +59,23 @@ static void	expand_str_part_env_var(char **expanded_str, int *i, int j,
 		(*i)--;
 	}
 	else
+	{
 		*expanded_str = replace_word(*expanded_str, *i, j - 1,
 				expanded_env_var);
+		(*i) += ft_strlen(expanded_env_var) - 1;
+	}
 	free(env_var);
+	free(temp_expanded_str);
+}
+
+static void	expand_str_without_dollar(char **expanded_str, int i, int j)
+{
+	char	*temp_expanded_str;
+
+	temp_expanded_str = *expanded_str;
+	if (!ft_isdigit((*expanded_str)[j]))
+		j--;
+	*expanded_str = replace_word(*expanded_str, i, j, "");
 	free(temp_expanded_str);
 }
 
@@ -73,17 +88,6 @@ static void	expand_str_part_exit_code(char **expanded_str, int i, int j)
 	exit_code_as_str = ft_itoa(g_exit_code);
 	*expanded_str = replace_word(*expanded_str, i, j, exit_code_as_str);
 	free(exit_code_as_str);
-	free(temp_expanded_str);
-}
-
-static void	expand_str_without_dollar(char **expanded_str, int i, int j)
-{
-	char	*temp_expanded_str;
-
-	temp_expanded_str = *expanded_str;
-	if (!ft_isdigit((*expanded_str)[j]))
-		j--;
-	*expanded_str = replace_word(*expanded_str, i, j, "");
 	free(temp_expanded_str);
 }
 
