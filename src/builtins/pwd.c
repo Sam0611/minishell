@@ -25,7 +25,10 @@ int	pwd(void)
 	if (!buffer)
 		return (1);
 	if (getcwd(buffer, size) == NULL)
+	{
+		free(buffer);
 		return (1);
+	}
 	printf("%s\n", buffer);
 	free(buffer);
 	return (0);

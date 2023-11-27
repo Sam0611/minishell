@@ -18,6 +18,7 @@
 #include "executer.h"
 #include "builtins.h"
 #include "ft_string.h"
+#include "ft_stdio.h"
 
 #define ERROR 1
 #define PWD_NOT_FOUND 2
@@ -79,6 +80,7 @@ char	**cd(char **args, char **env)
 		return (env);
 	if (chdir(args[1]))
 	{
+		ft_putstr_fd("minishell: cd: ", 2);
 		ft_error(args[1], ERR_ARG);
 		return (env);
 	}
