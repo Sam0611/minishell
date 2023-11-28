@@ -42,6 +42,8 @@ static void	exit_process(t_params *vars)
 	free(vars->env[i]);
 	free(vars->env);
 	commands_destroy(vars->cmd_beginning);
+	if (g_exit_code < 0)
+		g_exit_code = (g_exit_code + 1) * -1;
 	exit(g_exit_code);
 }
 
@@ -76,11 +78,11 @@ static void	exec_in_child_process(t_command *cmd, t_params *vars)
 		ft_error("minishell", ERR_FCT);
 	if (pid == 0)
 	{
-		if (is_builtin(cmd->args) == BUILTIN_ENV)
-			builtins_changing_env(cmd->args, vars->env);
 		if (!dup_and_close_fds(vars))
-			if (!exec_builtins(cmd->args, vars->env) && path)
+			if (!exec_builtins(cmd->args, vars->env) && path
+				&& is_builtin(cmd->args) != BUILTIN_ENV)
 				execve(path, cmd->args, vars->env);
+		builtins_changing_env(cmd->args, vars->env);
 		exit_process(vars);
 	}
 	free(path);

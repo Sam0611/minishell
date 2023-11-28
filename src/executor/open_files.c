@@ -25,13 +25,11 @@ static int	get_heredoc_fd(char *limiter)
 {
 	char	*str;
 	int		pipefd[2];
-	int		len;
 	int		tmp_in;
 
 	tmp_in = dup(0);
 	signal(SIGINT, sigint_in_heredoc);
 	signal(SIGQUIT, SIG_IGN);
-	len = ft_strlen(limiter);
 	if (pipe(pipefd) == -1)
 		return (-1);
 	str = readline("heredoc> ");
