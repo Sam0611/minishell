@@ -69,8 +69,6 @@ static void	exec_in_child_process(t_command *cmd, t_params *vars)
 	path = NULL;
 	if (!is_builtin(cmd->args))
 		path = get_path(*cmd, vars->env);
-	else
-		g_exit_code = 0;
 	signal(SIGINT, sigint_in_cmd);
 	signal(SIGQUIT, sigquit_in_cmd);
 	pid = fork();
@@ -78,6 +76,8 @@ static void	exec_in_child_process(t_command *cmd, t_params *vars)
 		ft_error("minishell", ERR_FCT);
 	if (pid == 0)
 	{
+		if (is_builtin(cmd->args) == BUILTIN_ENV)
+			builtins_changing_env(cmd->args, vars->env);
 		if (!dup_and_close_fds(vars))
 			if (!exec_builtins(cmd->args, vars->env) && path)
 				execve(path, cmd->args, vars->env);
@@ -126,6 +126,7 @@ char	**exec(t_list *uncasted_command, char **env)
 	while (uncasted_command && g_exit_code != ERR_SIGINT)
 	{
 		signal(SIGQUIT, SIG_IGN);
+		g_exit_code = 0;
 		execute_cmd(uncasted_command, &vars);
 		uncasted_command = uncasted_command->next;
 	}
