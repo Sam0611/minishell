@@ -82,7 +82,7 @@ static void	exec_in_child_process(t_command *cmd, t_params *vars)
 			if (!exec_builtins(cmd->args, vars->env) && path
 				&& is_builtin(cmd->args) != BUILTIN_ENV)
 				execve(path, cmd->args, vars->env);
-		builtins_changing_env(cmd->args, vars->env);
+		vars->env = builtins_changing_env(cmd->args, vars->env);
 		exit_process(vars);
 	}
 	free(path);

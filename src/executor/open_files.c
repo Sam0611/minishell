@@ -36,6 +36,7 @@ static int	get_heredoc_fd(char *limiter)
 	while (str && ft_strcmp(str, limiter))
 	{
 		write(pipefd[1], str, ft_strlen(str));
+		write(pipefd[1], "\n", 1);
 		free(str);
 		str = readline("heredoc> ");
 	}
