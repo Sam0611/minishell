@@ -11,8 +11,20 @@
 /* ************************************************************************** */
 
 #include "ft_string.h"
+#include "minishell.h"
 
 void	expand_str_part(char **expanded_str, int *i, char **env);
+
+static void	reset_exit_code(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i] != '$')
+		i++;
+	if (str[i])
+		g_exit_code = 0;
+}
 
 char	*expand_str(char *str, char **env)
 {
@@ -39,5 +51,6 @@ char	*expand_str(char *str, char **env)
 			expand_str_part(&expanded_str, &i, env);
 		i++;
 	}
+	reset_exit_code(str);
 	return (expanded_str);
 }
