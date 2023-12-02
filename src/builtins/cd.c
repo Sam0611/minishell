@@ -23,24 +23,31 @@
 #define ERROR 1
 #define PWD_NOT_FOUND 2
 
-static int	change_oldpwd(char **env, char *oldpwd)
+static int	change_oldpwd(char **env, int j)
 {
-	int	i;
+	int		i;
+	char	*oldpwd;
 
+	oldpwd = ft_strdup(env[j] + 4);
+	if (!oldpwd)
+		return (0);
 	i = 0;
 	while (env && env[i] && ft_strncmp(env[i], "OLDPWD=", 7))
 		i++;
 	if (!env || !env[i])
+	{
+		free(oldpwd);
 		return (ERROR);
+	}
 	free(env[i]);
 	env[i] = ft_strjoin("OLDPWD=", oldpwd);
+	free(oldpwd);
 	return (0);
 }
 
 static int	change_pwd(char **env)
 {
 	char	*pwd;
-	char	*oldpwd;
 	int		size;
 	int		i;
 
@@ -53,11 +60,12 @@ static int	change_pwd(char **env)
 	pwd = malloc(sizeof(char) * size);
 	if (!pwd)
 		return (ERROR);
-	getcwd(pwd, size);
-	oldpwd = ft_strdup(env[i] + 4);
-	if (oldpwd)
-		change_oldpwd(env, oldpwd);
-	free(oldpwd);
+	if (getcwd(pwd, size) == NULL)
+	{
+		free(pwd);
+		return (0);
+	}
+	change_oldpwd(env, i);
 	free(env[i]);
 	env[i] = ft_strjoin("PWD=", pwd);
 	free(pwd);
